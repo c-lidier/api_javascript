@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Carte avec l'API JavaScript Esri</title>
+    <script src="https://js.arcgis.com/4.24/"></script>
+    <style>
+      html, body, #viewDiv {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/identity/OAuthInfo",
+        "esri/layers/FeatureLayer",
+        "esri/identity/IdentityManager"
+      ], function (Map, MapView, OAuthInfo, FeatureLayer, IdentityManager) {
+
+        // Configuration OAuth
+        var info = new OAuthInfo({
+          appId: "2a896c8059e14ac8be8535d1b8f19048", // Remplacez par votre App ID
+          portalUrl: "https://cartes-preprod.nouvelle-aquitaine.pro/portal" // URL du portail
+        });
+
+        // Enregistrer les informations OAuth
+        IdentityManager.registerOAuthInfos([info]);
+
+        // Créer la carte
+        var map = new Map({
+          basemap: "streets-navigation-vector"
+        });
+
+        // Créer la vue de la carte
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-0.45, 45.02700], // Coordonnées de départ
+          zoom: 13
+        });
+
+        // Ajouter la couche sécurisée
+        var layer = new FeatureLayer({
+          url: "https://cartes-preprod.nouvelle-aquitaine.pro/server/rest/services/Hosted/test_recette/FeatureServer/19",
+          outFields: ["*"]
+        });
+
+        // Gérer l'authentification avant d'ajouter la couche
+        IdentityManager.checkSignInStatus(info.portalUrl + "/sharing")
+          .then(function() {
+            map.add(layer);
+          })
+          .catch(function(error) {
+            console.error("Erreur d'authentification : ", error);
+            // Rediriger l'utilisateur pour se connecter
+            IdentityManager.getCredential(info.portalUrl + "/sharing", {
+              oAuthPopupConfirmation: false
+            }).then(function(credential) {
+              map.add(layer);
+            });
+          });
+
+      });
+    </script>
+  </body>
+</html>
+

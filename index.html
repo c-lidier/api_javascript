@@ -1,50 +1,76 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carte ArcGIS Enterprise</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
-    <script src="https://js.arcgis.com/4.29/"></script>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <title>Features component | Sample | ArcGIS Maps SDK for JavaScript 4.31</title>
+
     <style>
-        html, body, #viewDiv {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
     </style>
+    <!-- Load Calcite components from CDN -->
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.13.2/calcite.css" />
+    <script type="module" src="https://js.arcgis.com/calcite-components/2.13.2/calcite.esm.js"></script>
+
+    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.31/"></script>
+
+    <!-- Load Map components from CDN-->
+    <script
+      type="module"
+      src="https://js.arcgis.com/map-components/4.31/arcgis-map-components.esm.js"
+    ></script>
+  </head>
+
+  <body>
+    <calcite-shell content-behind>
+      <calcite-shell-panel slot="panel-start" position="start" width-scale="l">
+        <calcite-block heading="Select National Park trails and boundaries."></calcite-block>
+        <arcgis-features class="calcite-match-height" reference-element="#parks-map"></arcgis-features>
+      </calcite-shell-panel>
+      <arcgis-map item-id="f3a9e5cb35104adca280623db2da3cbe" id="parks-map" popup-disabled></arcgis-map>
+    </calcite-shell>
     <script>
-        require([
-            "esri/Map",
-            "esri/views/MapView",
-            "esri/layers/FeatureLayer"
-        ], function(Map, MapView, FeatureLayer) {
+      const map = document.querySelector("arcgis-map");
+      const featuresComponent = document.querySelector("arcgis-features");
 
-            // Création de la carte
-            var map = new Map({
-                basemap: "streets-navigation-vector"
-            });
+      // Add a custom action to the actions menu.
+      featuresComponent.actions = [
+        {
+          type: "button",
+          title: "Visitor Use Statistics",
+          id: "more-info",
+          icon: "information-letter"
+        }
+      ];
 
-            // Affichage dans une div
-            var view = new MapView({
-                container: "viewDiv",
-                map: map,
-                center: [0, 44], // Longitude, Latitude
-                zoom: 6
-            });
 
-            // Ajout d'une couche d'entités depuis ArcGIS Enterprise
-            var featureLayer = new FeatureLayer({
-                url: "https://cartes.nouvelle-aquitaine.pro/server/rest/services/Hosted/tiers_lieux_public/FeatureServer/0"
-            });
-
-            map.add(featureLayer);
+      // Add an event listener to the map to open the Features component when the user clicks on the map.
+      map.addEventListener("arcgisViewClick", (event) => {
+        const { mapPoint } = event.detail;
+        featuresComponent.open({
+          location: mapPoint,
+          fetchFeatures: true
         });
+      });
+
+      // Add an event listener to watch the Features component trigger-action
+      // and open a website of the specific action is clicked.
+      featuresComponent.addEventListener("arcgisTriggerAction", (event) => {
+        const { action } = event.detail;
+        if (action.id === "more-info") {
+          window.open("https://www.nps.gov/subjects/socialscience/visitor-use-statistics-dashboard.htm");
+        }
+      });
     </script>
-</head>
-<body>
-    <div id="viewDiv"></div>
-</body>
+  </body>
 </html>
 
 

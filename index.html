@@ -3,39 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebMap avec OAuth 2.0 - ArcGIS Components</title>
-
-    <!-- ArcGIS Maps SDK for JavaScript Components -->
-    <script type="module" src="https://js.arcgis.com/map-components/4.29/arcgis-map-components.esm.js"></script>
-    <link rel="stylesheet" href="https://js.arcgis.com/map-components/4.29/arcgis-map-components.css">
-
+    <title>ArcGIS Web Map Viewer</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.28/"></script>
     <style>
-        html, body, arcgis-map {
-            height: 100%;
+        html, body, #mapView {
             margin: 0;
             padding: 0;
+            height: 100vh;
+            width: 100vw;
+        }
+        #loginBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: #0079c1;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
+    <button id="loginBtn">Se connecter</button>
+    <div id="mapView"></div>
 
-    <!-- Composant d'authentification OAuth2 -->
-    <arcgis-auth
-        client-id="5dosxe04wuaFs68X"  <!-- Remplace par ton App ID -->
-        portal="https://cartes.nouvelle-aquitaine.pro/portal" <!-- Remplace par l'URL de ton portail ArcGIS Enterprise -->
-        auto-auth
-    ></arcgis-auth>
+    <script>
+        require([
+            "esri/identity/OAuthInfo",
+            "esri/identity/IdentityManager",
+            "esri/WebMap",
+            "esri/views/MapView"
+        ], function (OAuthInfo, IdentityManager, WebMap, MapView) {
 
-   
+            // Configuration de l'authentification OAuth2
+            const oauthInfo = new OAuthInfo({
+                appId: "5dosxe04wuaFs68X", // Remplacez par l'ID de votre application ArcGIS Enterprise
+                portalUrl: "https://cartes.nouvelle-aquitaine.pro/portal", // Remplacez par l'URL de votre portail ArcGIS Enterprise
+                popup: true
+            });
 
-    <!-- Carte WebMap -->
-    <arcgis-map>
-      <arcgis-webmap item-id="fa72bf598e144750b332ff211651eb7e"></arcgis-webmap> <!-- Remplace par l'ID de ta WebMap -->
-    </arcgis-map>
+            IdentityManager.registerOAuthInfos([oauthInfo]);
 
+            // Récupération et affichage de la Web Map
+            function loadWebMap() {
+                const webmap = new WebMap({
+                    portalItem: {
+                        id: "fa72bf598e144750b332ff211651eb7e" // Remplacez par l'ID de votre Web Map
+                    }
+                });
 
+                new MapView({
+                    container: "mapView",
+                    map: webmap
+                });
+            }
+
+            // Gestion de la connexion
+            function signIn() {
+                IdentityManager.getCredential(oauthInfo.portalUrl).then(loadWebMap);
+            }
+
+            document.getElementById("loginBtn").addEventListener("click", signIn);
+
+            // Vérifie si l'utilisateur est déjà connecté
+            IdentityManager.checkSignInStatus(oauthInfo.portalUrl).then(loadWebMap).catch(() => {
+                console.log("Connexion requise");
+            });
+        });
+    </script>
 </body>
 </html>
+
 
 
 

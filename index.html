@@ -1,76 +1,51 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
-    <title>Features component | Sample | ArcGIS Maps SDK for JavaScript 4.31</title>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebMap avec OAuth 2.0 - ArcGIS Components</title>
+
+    <!-- ArcGIS Maps SDK for JavaScript Components -->
+    <script type="module" src="https://js.arcgis.com/map-components/4.29/arcgis-map-components.esm.js"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/map-components/4.29/arcgis-map-components.css">
+
+    <!-- Calcite Components -->
+    <script type="module" src="https://js.arcgis.com/calcite-components/2.4.0/calcite.esm.js"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/2.4.0/calcite.css">
 
     <style>
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
+        html, body, arcgis-map {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
     </style>
-    <!-- Load Calcite components from CDN -->
-    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.13.2/calcite.css" />
-    <script type="module" src="https://js.arcgis.com/calcite-components/2.13.2/calcite.esm.js"></script>
+</head>
+<body>
 
-    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
-    <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/4.31/"></script>
+    <!-- Composant d'authentification OAuth2 -->
+    <arcgis-auth
+        client-id="5dosxe04wuaFs68X"  <!-- Remplace par ton App ID -->
+        portal="https://cartes.nouvelle-aquitaine.pro/portal" <!-- Remplace par l'URL de ton portail ArcGIS Enterprise -->
+        auto-auth
+    ></arcgis-auth>
 
-    <!-- Load Map components from CDN-->
-    <script
-      type="module"
-      src="https://js.arcgis.com/map-components/4.31/arcgis-map-components.esm.js"
-    ></script>
-  </head>
+    <!-- Interface avec Calcite -->
+    <calcite-shell>
+        <calcite-shell-panel slot="panel-start">
+            <calcite-panel heading="Options">
+                <calcite-button width="full" onclick="location.reload();">🔄 Recharger</calcite-button>
+            </calcite-panel>
+        </calcite-shell-panel>
 
-  <body>
-    <calcite-shell content-behind>
-      <calcite-shell-panel slot="panel-start" position="start" width-scale="l">
-        <calcite-block heading="Select National Park trails and boundaries."></calcite-block>
-        <arcgis-features class="calcite-match-height" reference-element="#parks-map"></arcgis-features>
-      </calcite-shell-panel>
-      <arcgis-map item-id="f3a9e5cb35104adca280623db2da3cbe" id="parks-map" popup-disabled></arcgis-map>
+        <!-- Carte WebMap -->
+        <arcgis-map>
+            <arcgis-webmap item-id="fa72bf598e144750b332ff211651eb7e"></arcgis-webmap> <!-- Remplace par l'ID de ta WebMap -->
+        </arcgis-map>
     </calcite-shell>
-    <script>
-      const map = document.querySelector("arcgis-map");
-      const featuresComponent = document.querySelector("arcgis-features");
 
-      // Add a custom action to the actions menu.
-      featuresComponent.actions = [
-        {
-          type: "button",
-          title: "Visitor Use Statistics",
-          id: "more-info",
-          icon: "information-letter"
-        }
-      ];
-
-
-      // Add an event listener to the map to open the Features component when the user clicks on the map.
-      map.addEventListener("arcgisViewClick", (event) => {
-        const { mapPoint } = event.detail;
-        featuresComponent.open({
-          location: mapPoint,
-          fetchFeatures: true
-        });
-      });
-
-      // Add an event listener to watch the Features component trigger-action
-      // and open a website of the specific action is clicked.
-      featuresComponent.addEventListener("arcgisTriggerAction", (event) => {
-        const { action } = event.detail;
-        if (action.id === "more-info") {
-          window.open("https://www.nps.gov/subjects/socialscience/visitor-use-statistics-dashboard.htm");
-        }
-      });
-    </script>
-  </body>
+</body>
 </html>
+
 
 

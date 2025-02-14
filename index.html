@@ -9,10 +9,6 @@
     <script type="module" src="https://js.arcgis.com/map-components/4.29/arcgis-map-components.esm.js"></script>
     <link rel="stylesheet" href="https://js.arcgis.com/map-components/4.29/arcgis-map-components.css">
 
-    <!-- Calcite Components -->
-    <script type="module" src="https://js.arcgis.com/calcite-components/2.4.0/calcite.esm.js"></script>
-    <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/2.4.0/calcite.css">
-
     <style>
         html, body, arcgis-map {
             height: 100%;
@@ -30,19 +26,13 @@
         auto-auth
     ></arcgis-auth>
 
-    <!-- Interface avec Calcite -->
-    <calcite-shell>
-        <calcite-shell-panel slot="panel-start">
-            <calcite-panel heading="Options">
-                <calcite-button width="full" onclick="location.reload();">🔄 Recharger</calcite-button>
-            </calcite-panel>
-        </calcite-shell-panel>
+   
 
-        <!-- Carte WebMap -->
-        <arcgis-map>
-            <arcgis-webmap item-id="fa72bf598e144750b332ff211651eb7e"></arcgis-webmap> <!-- Remplace par l'ID de ta WebMap -->
-        </arcgis-map>
-    </calcite-shell>
+    <!-- Carte WebMap -->
+    <arcgis-map>
+      <arcgis-webmap item-id="fa72bf598e144750b332ff211651eb7e"></arcgis-webmap> <!-- Remplace par l'ID de ta WebMap -->
+    </arcgis-map>
+
 
 </body>
 </html>

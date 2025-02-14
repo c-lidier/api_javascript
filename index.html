@@ -1,83 +1,45 @@
-<!DOCTYPE html>
-<html lang="fr">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcGIS Web Map Viewer</title>
-    <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css">
-    <script src="https://js.arcgis.com/4.28/"></script>
-    <style>
-        html, body, #mapView {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-        }
-        #loginBtn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 100;
-            background: #0079c1;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>ArcGIS Maps SDK for JavaScript Tutorials: Display a map using arcgis/map-components</title>
+
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+   <!-- Load Calcite components from CDN -->
+   <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/2.13.2/calcite.css" />
+   <script type="module" src="https://js.arcgis.com/calcite-components/2.13.2/calcite.esm.js"></script>
+   <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+   <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
+   <script src="https://js.arcgis.com/4.31/"></script>
+   <!-- Load Map components from CDN-->
+   <script
+     type="module"
+     src="https://js.arcgis.com/map-components/4.31/arcgis-map-components.esm.js"
+   ></script>
+
 </head>
+
+
 <body>
-    <button id="loginBtn">Se connecter</button>
-    <div id="mapView"></div>
 
-    <script>
-        require([
-            "esri/identity/OAuthInfo",
-            "esri/identity/IdentityManager",
-            "esri/WebMap",
-            "esri/views/MapView"
-        ], function (OAuthInfo, IdentityManager, WebMap, MapView) {
+  <arcgis-map item-id="237b9584339446a0b56317b5962a4971">
 
-            // Configuration de l'authentification OAuth2
-            const oauthInfo = new OAuthInfo({
-                appId: "5dosxe04wuaFs68X", // Remplacez par l'ID de votre application ArcGIS Enterprise
-                portalUrl: "https://cartes.nouvelle-aquitaine.pro/portal", // Remplacez par l'URL de votre portail ArcGIS Enterprise
-                popup: true
-            });
+    <arcgis-zoom position="top-left"></arcgis-zoom>
+    <arcgis-legend position="bottom-right"></arcgis-legend>
 
-            IdentityManager.registerOAuthInfos([oauthInfo]);
-            alert ()
-            // Récupération et affichage de la Web Map
-            function loadWebMap() {
-                const webmap = new WebMap({
-                    portalItem: {
-                        id: "173e2b36ed864cc38275ea677100e8df" // Remplacez par l'ID de votre Web Map
-                    }
-                });
+  </arcgis-map>
 
-                new MapView({
-                    container: "mapView",
-                    map: webmap
-                });
-            }
-
-            // Gestion de la connexion
-            function signIn() {
-                IdentityManager.getCredential(oauthInfo.portalUrl).then(loadWebMap);
-            }
-
-            document.getElementById("loginBtn").addEventListener("click", signIn);
-
-            // Vérifie si l'utilisateur est déjà connecté
-            IdentityManager.checkSignInStatus(oauthInfo.portalUrl).then(loadWebMap).catch(() => {
-                console.log("Connexion requise");
-            });
-        });
-    </script>
 </body>
+
+
 </html>
-
-
-
-

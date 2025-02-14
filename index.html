@@ -38,7 +38,34 @@
     <arcgis-legend position="bottom-right"></arcgis-legend>
 
   </arcgis-map>
+  <script>
+    require([
+      "esri/portal/PortalItem",
+      "esri/portal/Portal",
+      "esri/core/lang",
+      "esri/identity/IdentityManager"
+    ], function(PortalItem, Portal, lang, IdentityManager) {
+      var webMapId = "173e2b36ed864cc38275ea677100e8df"; // Remplacez par l'ID de votre Web Map
+      
+      var portal = new Portal({
+        url: "https://cartes.nouvelle-aquitaine.pro/portal" // URL de votre portail
+      });
 
+      portal.load().then(function() {
+        var portalItem = new PortalItem({
+          id: webMapId
+        });
+
+        portalItem.fetchData().then(function(data) {
+          console.log("Web Map chargée avec succès");
+        }).catch(function(error) {
+          console.error("Erreur lors du chargement de la Web Map:", error);
+        });
+      }).catch(function(error) {
+        console.error("Erreur lors du chargement du portail:", error);
+      });
+    });
+  </script>
 </body>
 
 
